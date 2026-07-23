@@ -1,0 +1,7 @@
+yfinance
+ruptures
+pandas
+numpy
+statsmodels
+torch
+matplotlib
