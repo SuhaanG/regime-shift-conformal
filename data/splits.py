@@ -9,7 +9,10 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-FEATURE_COLUMNS = ["Open", "High", "Low", "Close", "Volume", "realized_vol"]
+FEATURE_COLUMNS = [
+    "Open", "High", "Low", "Close", "Volume", "realized_vol",
+    "log_return", "return_zscore", "volume_zscore", "vol_ratio", "momentum",
+]
 
 
 def _load_and_clean(csv_path: str) -> pd.DataFrame:
