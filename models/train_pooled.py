@@ -100,7 +100,7 @@ def evaluate(model, dataloader, device) -> dict:
     }
 
 
-def train(window_size: int = 60, horizon: int = 10, batch_size: int = 32, n_epochs: int = 30, lr: float = 3e-4):
+def train(window_size: int = 60, horizon: int = 10, batch_size: int = 32, n_epochs: int = 150, lr: float = 3e-4):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     print(f"Pooling {len(ALL_CSVS)} tickers for training")
