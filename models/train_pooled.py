@@ -167,6 +167,8 @@ def train(window_size: int = 60, horizon: int = 10, batch_size: int = 32, n_epoc
     if best_model_state is not None:
         model.load_state_dict(best_model_state)
         print(f"\nLoaded best checkpoint with val_f1={best_f1:.3f}")
+        torch.save(model.state_dict(), "best_model_checkpoint.pt")
+        print("Model checkpoint saved to best_model_checkpoint.pt")
 
     return model
 
