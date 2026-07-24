@@ -135,7 +135,8 @@ def train(window_size: int = 60, horizon: int = HORIZON, batch_size: int = 32, n
         if val_metrics["mae"] < best_mae:
             best_mae = val_metrics["mae"]
             best_model_state = copy.deepcopy(model.state_dict())
-            print(f"  -> New best model (MAE={best_mae:.3f}), checkpointed")
+            torch.save(best_model_state, "lead_time_model_checkpoint.pt")
+            print(f"  -> New best model (MAE={best_mae:.3f}), checkpointed and saved to disk")
 
     if best_model_state is not None:
         model.load_state_dict(best_model_state)
