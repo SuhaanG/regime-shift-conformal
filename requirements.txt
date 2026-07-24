@@ -6,3 +6,4 @@ statsmodels
 torch
 matplotlib
 scikit-learn
+arch
