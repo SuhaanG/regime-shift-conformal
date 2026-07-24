@@ -1,17 +1,12 @@
 """
 Trains the CNN-LSTM-Attention model on a pooled dataset across the full
 ticker universe (primary evaluation assets + calibration universe),
-rather than a single ticker. This addresses the insufficient-signal
-problem observed when training on VUG alone (120 positive examples was
-too few for the model to learn a generalizable decision boundary).
+rather than a single ticker.
 
-Normalization is still fit per-ticker on that ticker's own training
-split (avoiding lookahead bias within each series), then pooled datasets
-are concatenated across tickers for training/validation/testing.
-
-Includes validation-F1-based checkpointing (to select the best epoch
-rather than just the last one) and PR-AUC (a threshold-independent
-metric appropriate for severe class imbalance).
+Includes validation-F1-based checkpointing (saved to disk), PR-AUC
+(threshold-independent metric appropriate for severe class imbalance),
+and a hard failure if primary evaluation assets are missing, so
+training can never silently proceed without VUG/ARKK/SPY included.
 """
 from sklearn.metrics import average_precision_score
 import copy
@@ -104,6 +99,13 @@ def train(window_size: int = 60, horizon: int = 10, batch_size: int = 32, n_epoc
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     print(f"Pooling {len(ALL_CSVS)} tickers for training")
+
+    missing_primary = [p for p in PRIMARY_CSVS if not os.path.exists(p)]
+    if missing_primary:
+        raise FileNotFoundError(
+            f"Primary evaluation assets missing, aborting training: {missing_primary}. "
+            f"Run data/download_and_label.py and data/add_features.py first."
+        )
 
     train_ds, val_ds, test_ds = build_pooled_splits(ALL_CSVS, window_size, horizon)
     print(f"Pooled train: {len(train_ds)} windows, val: {len(val_ds)}, test: {len(test_ds)}")
